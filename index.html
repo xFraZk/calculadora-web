@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Costos Hoho 3D</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Materialize CSS & Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #1976D2;
+      --secondary-color: #FF6F00;
+      --dark-bg: #121212;
+      --card-bg: #1e1e1e;
+      --section-bg: #252525;
+      --text-primary: #ffffff;
+      --text-secondary: #bbbbbb;
+      --accent-color: #4CAF50;
+      --error-color: #f44336;
+      --toggle-active: #64B5F6;
+      /* Colores para textos destacados */
+      --text-important: #FFD54F;
+      --text-info: #ffffff;
+      --text-desc:#fff8f7;
+      --text-warning: #FFCA28;
+      --text-success: #66BB6A;
+    }
+    
+    html, body {
+      background: var(--dark-bg) !important;
+      color: var(--text-primary);
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 500;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      margin-bottom: 1rem;
+    }
+    
+    nav, .primary-bg {
+      background-color: var(--primary-color) !important;
+    }
+    
+    .secondary-bg { background-color: var(--secondary-color) !important; }
+    .accent { color: var(--accent-color) !important; }
+    
+    /* Colores para textos destacados */
+    .text-important { color: var(--text-important) !important; }
+    .text-info { color: var(--text-info) !important; }
+    .text-warning { color: var(--text-warning) !important; }
+    .text-success { color: var(--text-success) !important; }
+    
+    .card { 
+      background: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .input-field {
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+      color: white;
+    }
+    
+    .input-field input[type="text"], 
+    .input-field input[type="number"], 
+    .input-field select,
+    .input-field textarea {
+      background: var(--section-bg);
+      color: #FFCA28;
+      border-bottom: 1px solid var(--primary-color);
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    
+    .input-field label {
+      color: var(--text-secondary);
+      font-weight: 400;
+      left: 0.75rem;
+    }
+    
+    .input-field input:focus, 
+    .input-field select:focus {
+      border-bottom: 1px solid var(--primary-color) !important;
+      box-shadow: 0 1px 0 0 var(--primary-color) !important;
+    }
+    
+    .input-field input::placeholder {
+      color: #ccc !important;
+      opacity: 1;
+    }
+
+    
+    .switch-container {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      padding: 0.75rem;
+      background: var(--section-bg);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+    
+    .switch-container.active {
+      background: rgba(25, 118, 210, 0.1);
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .switch label {
+      display: flex;
+      align-items: center;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .switch label .lever {
+      margin: 0 1rem;
+      background-color: var(--text-secondary);
+    }
+    
+    .switch label input[type=checkbox]:checked + .lever {
+      background-color: var(--toggle-active);
+    }
+    
+    .switch label input[type=checkbox]:checked + .lever:after {
+      background-color: var(--primary-color);
+    }
+    
+    .optional-fields {
+      padding: 1rem;
+      margin-top: 1rem;
+      background: rgba(37, 37, 37, 0.5);
+      border-radius: 6px;
+      border-left: 3px solid var(--primary-color);
+      animation: fadeIn 0.3s ease-out;
+      display: none;
+    }
+    
+    .collection {
+      background: var(--card-bg);
+      border: none;
+    }
+    
+    .collection-item {
+      background: var(--card-bg);
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--section-bg);
+    }
+    
+    .responsive-table th, .responsive-table td {
+      padding: 0.8em 1em !important;
+      color: var(--text-primary);
+    }
+    
+    .responsive-table th {
+      background: var(--primary-color) !important;
+      color: var(--text-primary) !important;
+      font-weight: 500;
+    }
+    
+    .responsive-table tr:nth-child(even) {
+      background-color: var(--section-bg);
+    }
+    
+    .responsive-table tr:last-child td {
+      font-weight: bold;
+    }
+    
+.helper-text {
+  font-size: 0.8rem;            /* Tamaño pequeño para texto auxiliar */
+  background-color: #555;       /* Fondo definido directamente, sin var(--text-desc) */
+  margin-bottom: 15px;          /* Espaciado inferior */
+  color: white;                 /* Mantener texto en blanco */
+  display: block;               /* Elemento en bloque */
+
+  padding: 0.4rem 0.6rem;       /* Espaciado interno para mejor legibilidad */
+  border-radius: 4px;           /* Bordes suaves */
+  line-height: 1.4;             /* Mejor lectura */
+}
+
+
+
+    
+    .wizard-step { 
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .wizard-step.active { 
+      display: block;
+      opacity: 1;
+    }
+    
+    .wizard-progress {
+      height: 8px; 
+      background: var(--section-bg); 
+      border-radius: 4px; 
+      overflow: hidden; 
+      margin: 20px 0 30px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    
+    .wizard-bar { 
+      background: var(--primary-color); 
+      height: 100%; 
+      transition: width 0.4s ease;
+    }
+    
+    .step-nav {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    
+    .step-btn {
+      cursor: pointer;
+      margin: 0 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    
+    .step-btn .badge {
+      background: var(--section-bg);
+      color: var(--text-secondary);
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+      border-radius: 50%;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      margin-bottom: 5px;
+    }
+    
+    .step-btn.active .badge {
+      background: var(--primary-color);
+      color: var(--text-primary);
+      transform: scale(1.1);
+    }
+    
+    .step-label {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .step-btn.active .step-label {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      margin: 30px 0 20px;
+      padding: 10px 15px;
+      background: var(--section-bg);
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .section-title i {
+      margin-right: 12px;
+      color: var(--primary-color);
+    }
+    
+    .section-title h5 {
+      margin: 0;
+      font-weight: 500;
+    }
+    
+    .card-action {
+      border-top: 1px solid var(--section-bg) !important;
+      padding: 20px !important;
+    }
+    
+    .btn-large {
+      padding: 0 28px;
+      height: 48px;
+      line-height: 48px;
+      font-size: 1rem;
+      font-weight: 500;
+      margin: 0.5rem;
+      min-width: 150px;
+    }
+    
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    
+    .summary-sub {
+      margin-bottom: 25px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .summary-sub .collection-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 20px;
+    }
+    
+    .note {
+      margin: 30px 0;
+      padding: 15px;
+      background: var(--section-bg);
+      border-radius: 6px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+    
+    .step-header {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .step-header i {
+      margin-right: 15px;
+      font-size: 1.8rem;
+    }
+    
+    .step-title {
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin: 0;
+      color: var(--text-info);
+    }
+    
+    .export-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .export-btn {
+      padding: 12px 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .export-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .export-pdf {
+      background: #b71c1c;
+      color: white;
+    }
+    
+    .export-btn i {
+      margin-right: 8px;
+    }
+    
+    .result-highlight {
+      background: rgba(66, 133, 244, 0.15);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid var(--text-success);
+    }
+    
+    .result-highlight .value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--text-success);
+      text-align: center;
+      margin-top: 10px;
+    }
+    
+    @media (max-width: 600px) {
+      .btn-large {
+        width: 100%;
+        margin: 0.5rem 0;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      .step-nav {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .step-btn {
+        margin: 5px 0;
+      }
+      
+      .step-label {
+        display: none;
+      }
+      
+      .section-title h5 {
+        font-size: 1.1rem;
+      }
+      
+      .export-buttons {
+        flex-direction: column;
+      }
+      
+      .export-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <style>
+
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-wrapper primary-bg">
+      <span class="brand-logo center text-important" style="font-size:1.5rem; font-weight:500;">
+        <i class="material-icons left">calculate</i>Calculadora de Costos Hoho 3D
+      </span>
+    </div>
+  </nav>
+  
+  <main class="container">
+    <form id="calcForm" autocomplete="off">
+      <!-- Wizard Progress Bar -->
+      <div class="wizard-progress">
+        <div class="wizard-bar" id="wizardBar" style="width: 25%;"></div>
+      </div>
+      
+      <!-- Step Navigation -->
+      <div class="step-nav">
+        <div class="step-btn active" id="stepNav1">
+          <span class="badge">1</span>
+          <span class="step-label">Básico</span>
+        </div>
+        <div class="step-btn" id="stepNav2">
+          <span class="badge">2</span>
+          <span class="step-label">Impresión</span>
+        </div>
+        <div class="step-btn" id="stepNav3">
+          <span class="badge">3</span>
+          <span class="step-label">Envío</span>
+        </div>
+        <div class="step-btn" id="stepNav4">
+          <span class="badge">4</span>
+          <span class="step-label">Resultado</span>
+        </div>
+      </div>
+
+      <!-- PASO 1: Configuración básica -->
+      <div class="card wizard-step active" id="step1">
+        <div class="card-content">
+          <div class="step-header">
+            <i class="material-icons primary-text">settings</i>
+            <h2 class="step-title">Paso 1: Configuración básica</h2>
+          </div>
+          
+          <div class="section-title">
+            <i class="material-icons">local_fire_department</i>
+            <h5>Filamento e Impresora</h5>
+          </div>
+          
+          <div class="row">
+            <div class="input-field col s12 m6">
+              <input id="tipoFilamento" name="tipoFilamento" type="text" class="validate">
+              <label for="tipoFilamento">Tipo de filamento</label>
+              <span class="helper-text">Ejemplo: PLA, ABS, PETG</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <input id="costoFilamento" type="number" min="0" step="any">
+              <label for="costoFilamento">Costo filamento por kilo (ARS)</label>
+              <span class="helper-text">Ejemplo: 4000 (para un rollo de 1kg)</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <input id="nombreImpresora" type="text">
+              <label for="nombreImpresora">¿Qué impresora usás?</label>
+              <span class="helper-text">Ejemplo: Ender 3, Prusa i3</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <input id="costoImpresora" type="number" min="0" step="any">
+              <label for="costoImpresora">Costo impresora (ARS)</label>
+              <span class="helper-text">Precio actual de tu impresora</span>
+            </div>
+          </div>
+
+          <div class="switch-container" id="advancedConfigContainer">
+            <div class="switch">
+              <label>
+                Configuración Avanzada
+                <input type="checkbox" id="toggleAdvancedConfig">
+                <span class="lever"></span>
+              </label>
+            </div>
+            <span class="helper-text" style="margin-left: 1rem;">Mostrar opciones avanzadas</span>
+          </div>
+          
+          <div id="advancedConfigFields" class="optional-fields">
+            <div class="row">
+              <div class="input-field col s12 m6">
+                <input id="impresionesAnio" type="number" min="1" step="any">
+                <label for="impresionesAnio">Impresiones estimadas/año</label>
+                <span class="helper-text">Cantidad aproximada de impresiones anuales</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="depreciacionImpresora" type="number" min="1" max="100">
+                <label for="depreciacionImpresora">Depreciación impresora/año (%)</label>
+                <span class="helper-text">Porcentaje que pierde valor tu impresora</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <i class="material-icons">bolt</i>
+            <h5>Costos Fijos</h5>
+          </div>
+          
+          <div class="row">
+            <div class="input-field col s12 m6">
+              <input id="costoEnergia" type="number" min="0" step="any">
+              <label for="costoEnergia">Costo energético KW/h (ARS)</label>
+              <span class="helper-text">Precio actual de la electricidad</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <input id="consumoImpresora" type="number" min="0" step="any">
+              <label for="consumoImpresora">Consumo impresora (Watts/h)</label>
+              <span class="helper-text">Consumo de tu impresora en Watts</span>
+            </div>
+            
+            <div class="switch-container" id="pcContainer">
+              <div class="switch">
+                <label>
+                  Incluir Costos de Computadora
+                  <input type="checkbox" id="togglePC">
+                  <span class="lever"></span>
+                </label>
+              </div>
+              <span class="helper-text" style="margin-left: 1rem;">Activa si usas computadora</span>
+            </div>
+            
+            <div id="pcFields" class="optional-fields">
+              <div class="row">
+                <div class="input-field col s12 m6">
+                  <input id="costoPC" type="number" min="0" step="any">
+                  <label for="costoPC">Costo equipo de cómputo (ARS)</label>
+                  <span class="helper-text">Valor de tu computadora</span>
+                </div>
+                
+                <div class="input-field col s12 m6">
+                  <input id="horasPC" type="number" min="0" step="any">
+                  <label for="horasPC">Horas uso PC por impresión</label>
+                  <span class="helper-text">Tiempo que usas la PC para preparar</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="switch-container" id="rentaContainer">
+              <div class="switch">
+                <label>
+                  Incluir Renta
+                  <input type="checkbox" id="toggleRenta">
+                  <span class="lever"></span>
+                </label>
+              </div>
+              <span class="helper-text" style="margin-left: 1rem;">Activa si pagás alquiler</span>
+            </div>
+            
+            <div id="rentaFields" class="optional-fields">
+              <div class="input-field col s12 m6">
+                <input id="renta" type="number" min="0" step="any">
+                <label for="renta">¿Pagás renta? (ARS)</label>
+                <span class="helper-text">Costo mensual de alquiler</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <i class="material-icons">liquor</i>
+            <h5>Consumibles</h5>
+          </div>
+          
+          <div class="switch-container" id="consumiblesContainer">
+            <div class="switch">
+              <label>
+                Incluir Consumibles
+                <input type="checkbox" id="toggleConsumibles">
+                <span class="lever"></span>
+              </label>
+            </div>
+            <span class="helper-text" style="margin-left: 1rem;">Activa para agregar consumibles</span>
+          </div>
+          
+          <div id="consumiblesFields" class="optional-fields">
+            <div class="row">
+              <div class="input-field col s12 m6">
+                <input id="alcohol" type="number" min="0" step="any">
+                <label for="alcohol">Alcohol isopropílico (ARS)</label>
+                <span class="helper-text">Costo por botella</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="adherente" type="number" min="0" step="any">
+                <label for="adherente">Adherente cama impresión (ARS)</label>
+                <span class="helper-text">Ejemplo: laca, pegamento</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="camaMagnetica" type="number" min="0" step="any">
+                <label for="camaMagnetica">Cama magnética (ARS)</label>
+                <span class="helper-text">Costo de reposición</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="memoriaSD" type="number" min="0" step="any">
+                <label for="memoriaSD">Memoria SD/MicroSD (ARS)</label>
+                <span class="helper-text">Costo de la memoria</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="otrosConsumibles" type="number" min="0" step="any">
+                <label for="otrosConsumibles">Otros consumibles (ARS)</label>
+                <span class="helper-text">Cualquier otro material</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="degradacionConsumibles" type="number" min="0" max="100">
+                <label for="degradacionConsumibles">% Degradación consumibles</label>
+                <span class="helper-text">% que se gasta por impresión</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-action">
+          <div class="btn-group">
+            <button type="button" class="btn secondary-bg waves-effect white-text prev-step" data-prev="1" disabled>
+              <i class="material-icons left">navigate_before</i>Anterior
+            </button>
+            <button type="button" class="btn primary-bg waves-effect next-step" data-next="2">
+              Siguiente <i class="material-icons right">navigate_next</i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 2: Impresión y Postprocesado -->
+      <div class="card wizard-step" id="step2">
+        <div class="card-content">
+          <div class="step-header">
+            <i class="material-icons primary-text">precision_manufacturing</i>
+            <h2 class="step-title">Paso 2: Impresión y Postprocesado</h2>
+          </div>
+          
+          <div class="section-title">
+            <i class="material-icons">print</i>
+            <h5>Detalles de Impresión</h5>
+          </div>
+          
+          <div class="row">
+            <div class="input-field col s12 m6">
+              <input id="gramosFilamento" type="number" min="0" step="any">
+              <label for="gramosFilamento">Filamento consumido (g)</label>
+              <span class="helper-text">Gramos que usará la impresión</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <input id="horasImpresion" type="number" min="0" step="any">
+              <label for="horasImpresion">Horas de impresión</label>
+              <span class="helper-text">Tiempo estimado de impresión</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <input id="factorError" type="number" min="1" step="any">
+              <label for="factorError">Factor de error de impresión</label>
+              <span class="helper-text">1.2 si sueles tener fallas</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <input id="sueldoHora" type="number" min="0" step="any">
+              <label for="sueldoHora">Sueldo por hora (ARS)</label>
+              <span class="helper-text">Lo que vale tu tiempo</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <input id="gananciaHora" type="number" min="0" step="any">
+              <label for="gananciaHora">Ganancia por hora (ARS)</label>
+              <span class="helper-text">Beneficio que quieres obtener</span>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <i class="material-icons">construction</i>
+            <h5>Postprocesado</h5>
+          </div>
+          
+          <div class="switch-container" id="postContainer">
+            <div class="switch">
+              <label>
+                Incluir Postprocesado
+                <input type="checkbox" id="togglePost">
+                <span class="lever"></span>
+              </label>
+            </div>
+            <span class="helper-text" style="margin-left: 1rem;">Activa si necesitas postprocesar</span>
+          </div>
+          
+          <div id="postFields" class="optional-fields">
+            <div class="row">
+              <div class="input-field col s12 m6">
+                <input id="horasPostproc" type="number" min="0" step="any">
+                <label for="horasPostproc">Horas de postprocesado</label>
+                <span class="helper-text">Tiempo de trabajo manual</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="costoPegamento" type="number" min="0" step="any">
+                <label for="costoPegamento">Costo del pegamento (ARS)</label>
+                <span class="helper-text">Para unir piezas</span>
+              </div>
+              
+              <div class="switch-container" id="lijadoContainer">
+                <div class="switch">
+                  <label>
+                    Incluir Lijado
+                    <input type="checkbox" id="toggleLijado">
+                    <span class="lever"></span>
+                  </label>
+                </div>
+                <span class="helper-text" style="margin-left: 1rem;">Activa si necesitas lijar</span>
+              </div>
+              
+              <div id="lijadoFields" class="optional-fields">
+                <div class="row">
+                  <div class="input-field col s12 m6">
+                    <select id="tipoLijado">
+                      <option value="" disabled selected>Elige una opción</option>
+                      <option value="manual">Manual</option>
+                      <option value="lijadora">Lijadora</option>
+                    </select>
+                    <label for="tipoLijado">Tipo de lijado</label>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="costoLijadora" type="number" min="0" step="any">
+                    <label for="costoLijadora">Costo lijadora (ARS)</label>
+                    <span class="helper-text">Si usas lijadora eléctrica</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="cantidadLijas" type="number" min="0" step="1">
+                    <label for="cantidadLijas">Cantidad de lijas</label>
+                    <span class="helper-text">Lijas usadas por pieza</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="costoLija" type="number" min="0" step="any">
+                    <label for="costoLija">Costo por lija (ARS)</label>
+                    <span class="helper-text">Costo unitario</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="sueldoHoraPostproc" type="number" min="0" step="any">
+                <label for="sueldoHoraPostproc">Sueldo postproc. (ARS/h)</label>
+                <span class="helper-text">Valor de tu tiempo en postproceso</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="otrosPostproc" type="number" min="0" step="any">
+                <label for="otrosPostproc">Otros costos (ARS)</label>
+                <span class="helper-text">Materiales adicionales</span>
+              </div>
+              
+              <div class="switch-container" id="paintContainer">
+                <div class="switch">
+                  <label>
+                    Incluir Pintura
+                    <input type="checkbox" id="togglePaint">
+                    <span class="lever"></span>
+                  </label>
+                </div>
+                <span class="helper-text" style="margin-left: 1rem;">Activa si vas a pintar la pieza</span>
+              </div>
+              
+              <div id="paintFields" class="optional-fields">
+                <div class="row">
+                  <div class="input-field col s12 m6">
+                    <input id="horasPintura" type="number" min="0" step="any">
+                    <label for="horasPintura">Horas de pintura</label>
+                    <span class="helper-text">Tiempo estimado</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <select id="compresorPropio">
+                      <option value="" disabled selected>Elige una opción</option>
+                      <option value="si">Sí</option>
+                      <option value="no">No</option>
+                    </select>
+                    <label for="compresorPropio">¿Compresor propio?</label>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="costoCompresor" type="number" min="0" step="any">
+                    <label for="costoCompresor">Costo compresor (ARS)</label>
+                    <span class="helper-text">Si no es propio, poner 0</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="costoAerografo" type="number" min="0" step="any">
+                    <label for="costoAerografo">Costo aerógrafo (ARS)</label>
+                    <span class="helper-text">Costo del equipo</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="costoPrimer" type="number" min="0" step="any">
+                    <label for="costoPrimer">Pintura primaria/primer (ARS)</label>
+                    <span class="helper-text">Costo de la pintura base</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="costoPintura" type="number" min="0" step="any">
+                    <label for="costoPintura">Pintura final (ARS)</label>
+                    <span class="helper-text">Costo de la pintura color</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="costoDiluyente" type="number" min="0" step="any">
+                    <label for="costoDiluyente">Diluyente (ARS)</label>
+                    <span class="helper-text">Para limpieza de herramientas</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="sueldoHoraPintura" type="number" min="0" step="any">
+                    <label for="sueldoHoraPintura">Sueldo pintura (ARS/h)</label>
+                    <span class="helper-text">Valor de tu tiempo pintando</span>
+                  </div>
+                  
+                  <div class="input-field col s12 m6">
+                    <input id="otrosPintura" type="number" min="0" step="any">
+                    <label for="otrosPintura">Otros costos (ARS)</label>
+                    <span class="helper-text">Materiales adicionales</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-action">
+          <div class="btn-group">
+            <button type="button" class="btn secondary-bg waves-effect white-text prev-step" data-prev="1">
+              <i class="material-icons left">navigate_before</i>Anterior
+            </button>
+            <button type="button" class="btn primary-bg waves-effect next-step" data-next="3">
+              Siguiente <i class="material-icons right">navigate_next</i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 3: Envío y Comisiones -->
+      <div class="card wizard-step" id="step3">
+        <div class="card-content">
+          <div class="step-header">
+            <i class="material-icons primary-text">local_shipping</i>
+            <h2 class="step-title">Paso 3: Envío y Comisiones</h2>
+          </div>
+          
+          <div class="section-title">
+            <i class="material-icons">local_shipping</i>
+            <h5>Envío</h5>
+          </div>
+          
+          <div class="switch-container" id="empaqueContainer">
+            <div class="switch">
+              <label>
+                Incluir Costos de Empaque
+                <input type="checkbox" id="toggleEmpaque">
+                <span class="lever"></span>
+              </label>
+            </div>
+            <span class="helper-text" style="margin-left: 1rem;">Activa si necesitas empaque</span>
+          </div>
+          
+          <div id="empaqueFields" class="optional-fields">
+            <div class="row">
+              <div class="input-field col s12 m6">
+                <input id="empaque" type="number" min="0" step="any">
+                <label for="empaque">Costo material empaque (ARS)</label>
+                <span class="helper-text">Cajas, burbujas, etc.</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="switch-container" id="envioNacContainer">
+            <div class="switch">
+              <label>
+                Incluir Envío Nacional
+                <input type="checkbox" id="toggleEnvioNac">
+                <span class="lever"></span>
+              </label>
+            </div>
+            <span class="helper-text" style="margin-left: 1rem;">Activa para envíos nacionales</span>
+          </div>
+          
+          <div id="envioNacionalBlock" class="optional-fields">
+            <div class="row">
+              <div class="input-field col s12 m6">
+                <select id="paqueteria">
+                  <option value="" disabled selected>Elige una opción</option>
+                  <option value="correo">Correo Argentino</option>
+                  <option value="andreani">Andreani</option>
+                  <option value="viaCargo">Via Cargo</option>
+                  <option value="otro">Otro</option>
+                </select>
+                <label for="paqueteria">Paquetería nacional</label>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="pesoPaquete" type="number" min="1" step="any">
+                <label for="pesoPaquete">Peso total paquete (kg)</label>
+                <span class="helper-text">Peso estimado con empaque</span>
+              </div>
+              
+              <div class="input-field col s12 m6">
+                <input id="envioNacional" type="number" min="0" step="any">
+                <label for="envioNacional">Costo envío nacional (ARS)</label>
+                <span class="helper-text">Se calcula automáticamente</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <i class="material-icons">gavel</i>
+            <h5>Impuestos y Comisiones</h5>
+          </div>
+          
+          <div class="row">
+            <div class="input-field col s12 m6">
+              <input id="iva" type="number" min="0" max="100" step="any" class="validate" value="21">
+              <label for="iva">Porcentaje de impuestos (IVA)</label>
+              <span class="helper-text">21% es el valor estándar</span>
+            </div>
+            
+            <div class="input-field col s12 m6">
+              <div class="switch" style="margin-top:24px;">
+                <label>
+                  Incluir recargo Mercado Libre
+                  <input type="checkbox" id="mercadoLibre">
+                  <span class="lever"></span>
+                  <span class="tooltipped" data-tooltip="Suma 10% extra de comisión ML sobre subtotal">
+                    <i class="material-icons left">storefront</i>Mercado Libre
+                  </span>
+                </label>
+              </div>
+              <span class="helper-text">(suma +10% sobre subtotal)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-action">
+          <div class="btn-group">
+            <button type="button" class="btn secondary-bg waves-effect white-text prev-step" data-prev="2">
+              <i class="material-icons left">navigate_before</i>Anterior
+            </button>
+            <button type="button" class="btn primary-bg waves-effect next-step" data-next="4">
+              Siguiente <i class="material-icons right">navigate_next</i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 4: Resumen y Ganancia -->
+      <div class="card wizard-step" id="step4">
+        <div class="card-content">
+          <div class="step-header">
+            <i class="material-icons primary-text">payments</i>
+            <h2 class="step-title">Paso 4: Resumen y Ganancia</h2>
+          </div>
+          
+          <div class="row">
+            <div class="col s12">
+              <div class="summary-sub collection">
+                <div class="collection-item" style="background-color: black;">
+                  <b>Ganancia total por horas impresión:</b>
+                  <span id="gananciaTotalPreview" class="right text-warning">—</span>
+                </div>
+                <div class="collection-item" style="background-color: black;">
+                  <b>Sueldo total por horas trabajo:</b>
+                  <span id="sueldoTotalPreview" class="right text-warning">—</span>
+                </div>
+              </div>
+              <span class="helper-text">* Se calcula automáticamente según los valores ingresados</span>
+            </div>
+          </div>
+          
+          <div class="section-title">
+            <i class="material-icons">summarize</i>
+            <h5>Resumen de Costos</h5>
+          </div>
+          
+          <section id="resumen"></section>
+          
+          <div class="result-highlight">
+            <div class="text-center text-important">Total Final Recomendado</div>
+            <div id="totalFinalValue" class="value">—</div>
+            <div class="text-center text-info">Este es el precio que deberías cobrar por tu impresión</div>
+          </div>
+          
+          <div class="input-field col s12">
+            <input id="nombreCliente" type="text">
+            <label for="nombreCliente">Nombre del cliente (opcional)</label>
+            <span class="helper-text">Para incluir en el presupuesto PDF</span>
+          </div>
+          
+          <div class="export-buttons">
+            <div class="export-btn export-pdf" id="exportPDFBtn">
+              <i class="material-icons">picture_as_pdf</i>Exportar a PDF
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-action">
+          <div class="btn-group">
+            <button type="button" class="btn secondary-bg waves-effect white-text prev-step" data-prev="3">
+              <i class="material-icons left">navigate_before</i>Anterior
+            </button>
+            <button type="button" class="btn accent waves-effect white-text" id="restartBtn" style="color: white;">
+              <i class="material-icons left">restart_alt</i>Comenzar de nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- NOTA FINAL -->
+      <div class="note">
+        <i class="material-icons tiny">info_outline</i> Todos los montos son aproximados y de referencia.
+      </div>
+    </form>
+  </main>
+
+  <!-- JS: jQuery + Materialize + lógica -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <!-- Librerías para exportación -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // Variables globales
+    const totalSteps = 4;
+    let currentStep = 1;
+    
+    // Inicialización cuando el DOM está listo
+    $(document).ready(function() {
+      // Inicializar componentes de Materialize
+      M.AutoInit();
+      $('select').formSelect();
+      $('.tooltipped').tooltip();
+      
+      // Mostrar el primer paso
+      showStep(1);
+      
+      // Configurar eventos para switches de secciones opcionales
+      setupEnhancedToggles();
+      
+      // Configurar eventos de navegación
+      setupNavigation();
+      
+      // Configurar eventos para actualización de cálculos
+      setupCalculationEvents();
+      
+      // Configurar eventos para exportación
+      setupExportEvents();
+    });
+    
+    // Configurar toggles mejorados
+    function setupEnhancedToggles() {
+      const toggleOptions = [
+        { toggle: '#toggleAdvancedConfig', container: '#advancedConfigContainer', section: '#advancedConfigFields' },
+        { toggle: '#togglePC', container: '#pcContainer', section: '#pcFields' },
+        { toggle: '#toggleRenta', container: '#rentaContainer', section: '#rentaFields' },
+        { toggle: '#toggleConsumibles', container: '#consumiblesContainer', section: '#consumiblesFields' },
+        { toggle: '#togglePost', container: '#postContainer', section: '#postFields' },
+        { toggle: '#toggleLijado', container: '#lijadoContainer', section: '#lijadoFields' },
+        { toggle: '#togglePaint', container: '#paintContainer', section: '#paintFields' },
+        { toggle: '#toggleEmpaque', container: '#empaqueContainer', section: '#empaqueFields' },
+        { toggle: '#toggleEnvioNac', container: '#envioNacContainer', section: '#envioNacionalBlock' }
+      ];
+      
+      toggleOptions.forEach(opt => {
+        // Configurar cambio visual al activar/desactivar
+        $(opt.toggle).change(function() {
+          const isChecked = $(this).is(':checked');
+          $(opt.container).toggleClass('active', isChecked);
+          
+          if (isChecked) {
+            $(opt.section).slideDown(300);
+          } else {
+            $(opt.section).slideUp(300);
+          }
+          
+          // Si es postprocesado, manejar dependencias
+          if (opt.toggle === '#togglePost' && !isChecked) {
+            $('#toggleLijado').prop('checked', false).trigger('change');
+            $('#togglePaint').prop('checked', false).trigger('change');
+          }
+          
+          calculateSummary();
+        });
+        
+        // Inicializar estado (todos desactivados por defecto)
+        $(opt.toggle).prop('checked', false);
+        $(opt.container).removeClass('active');
+        $(opt.section).hide();
+      });
+    }
+    
+    // Configurar navegación entre pasos
+    function setupNavigation() {
+      // Botones Siguiente
+      $('.next-step').click(function() {
+        const nextStep = $(this).data('next');
+        showStep(nextStep);
+      });
+      
+      // Botones Anterior
+      $('.prev-step').click(function() {
+        const prevStep = $(this).data('prev');
+        showStep(prevStep);
+      });
+      
+      // Botón Reiniciar
+      $('#restartBtn').click(function() {
+        restartCalculator();
+      });
+      
+      // Navegación por pasos
+      $('.step-btn').click(function() {
+        const step = $(this).attr('id').replace('stepNav', '');
+        showStep(parseInt(step));
+      });
+    }
+    
+    // Configurar eventos para cálculos
+    function setupCalculationEvents() {
+      // Actualizar envío al cambiar paquetería o peso
+      $('#paqueteria, #pesoPaquete').change(function() {
+        updateShippingCost();
+      });
+      
+      // Actualizar cálculos al cambiar cualquier input o select
+      $('input, select').on('change input', function() {
+        calculateSummary();
+      });
+    }
+    
+    // Configurar eventos para exportación
+    function setupExportEvents() {
+      $('#exportPDFBtn').click(exportToPDF);
+    }
+    
+    // Navegar entre pasos
+    function showStep(step) {
+      // Validar límites
+      if (step < 1) step = 1;
+      if (step > totalSteps) step = totalSteps;
+      
+      // Ocultar todos los pasos
+      $('.wizard-step').removeClass('active');
+      
+      // Mostrar paso actual
+      $('#step' + step).addClass('active');
+      
+      // Actualizar barra de progreso
+      const percent = Math.round(step * 100 / totalSteps);
+      $('#wizardBar').css('width', percent + '%');
+      
+      // Actualizar navegación
+      $('.step-btn').removeClass('active');
+      $('#stepNav' + step).addClass('active');
+      
+      // Reinicializar componentes Materialize
+      setTimeout(() => {
+        $('select').formSelect();
+        $('.tooltipped').tooltip();
+      }, 100);
+      
+      // Si es el último paso, calcular resumen
+      if (step === 4) {
+        updateEarningsPreview();
+        calculateSummary();
+      }
+      
+      // Scroll suave al inicio del paso
+      $('html, body').animate({
+        scrollTop: $('#step' + step).offset().top - 20
+      }, 300);
+      
+      // Actualizar paso actual
+      currentStep = step;
+      
+      // Deshabilitar botones de navegación cuando corresponda
+      $('.prev-step').prop('disabled', step === 1);
+    }
+    
+    // Reiniciar calculadora
+    function restartCalculator() {
+      // Resetear formulario
+      $('#calcForm')[0].reset();
+      
+      // Resetear selects
+      $('select').val('');
+      $('select').formSelect();
+      
+      // Ocultar todas las secciones opcionales
+      $('.optional-fields').slideUp(300);
+      
+      // Desactivar todos los switches y contenedores
+      $('.switch input[type="checkbox"]').prop('checked', false);
+      $('.switch-container').removeClass('active');
+      
+      // Volver al primer paso
+      showStep(1);
+      
+      // Mostrar mensaje de reinicio
+      M.toast({html: 'Calculadora reiniciada', classes: 'green'});
+    }
+    
+    // Actualizar costo de envío según paquetería y peso
+    function updateShippingCost() {
+      const paq = $('#paqueteria').val();
+      const peso = parseFloat($('#pesoPaquete').val()) || 2;
+      let envio = 0;
+      
+      if (paq === 'correo' || paq === 'andreani') {
+        envio = (peso <= 10) ? 10000 : 20000;
+      } else if (paq === 'viaCargo') {
+        envio = 0;
+      } else if (paq === 'otro') {
+        envio = 0; // Usuario debe ingresar manualmente
+      }
+      
+      $('#envioNacional').val(envio);
+      calculateSummary();
+    }
+    
+    // Actualizar previsualización de ganancias
+    function updateEarningsPreview() {
+      const horasImpresion = parseFloat($('#horasImpresion').val()) || 0;
+      const gananciaHora = parseFloat($('#gananciaHora').val()) || 0;
+      const sueldoHora = parseFloat($('#sueldoHora').val()) || 0;
+      
+      const postprocActivo = $('#togglePost').is(':checked');
+      const paintActivo = $('#togglePaint').is(':checked');
+      
+      const horasPostproc = postprocActivo ? (parseFloat($('#horasPostproc').val()) || 0) : 0;
+      const sueldoHoraPostproc = postprocActivo ? (parseFloat($('#sueldoHoraPostproc').val()) || 0) : 0;
+      
+      const horasPintura = (postprocActivo && paintActivo) ? (parseFloat($('#horasPintura').val()) || 0) : 0;
+      const sueldoHoraPintura = (postprocActivo && paintActivo) ? (parseFloat($('#sueldoHoraPintura').val()) || 0) : 0;
+      
+      const gananciaTotal = gananciaHora * horasImpresion;
+      const sueldoTotal = (sueldoHora * horasImpresion) +
+                         (postprocActivo ? (sueldoHoraPostproc * horasPostproc) : 0) +
+                         ((postprocActivo && paintActivo) ? (sueldoHoraPintura * horasPintura) : 0);
+      
+      $('#gananciaTotalPreview').text(formatCurrency(gananciaTotal));
+      $('#sueldoTotalPreview').text(formatCurrency(sueldoTotal));
+    }
+    
+    // Calcular resumen completo
+    function calculateSummary() {
+      // Obtener valores básicos
+      const costoFilamento = parseFloat($('#costoFilamento').val()) || 0;
+      const gramosFilamento = parseFloat($('#gramosFilamento').val()) || 0;
+      const factorError = parseFloat($('#factorError').val()) || 1;
+      const gramosFilamentoUsado = gramosFilamento * factorError;
+      const costoFilamentoUtilizado = (costoFilamento / 1000) * gramosFilamentoUsado;
+      
+      // Costos de energía
+      const costoEnergia = parseFloat($('#costoEnergia').val()) || 0;
+      const consumoImpresora = parseFloat($('#consumoImpresora').val()) || 0;
+      const horasImpresion = parseFloat($('#horasImpresion').val()) || 0;
+      const consumoKW = (consumoImpresora * horasImpresion) / 1000;
+      const costoElectrico = consumoKW * costoEnergia;
+      
+      // Costos de PC (si está activado)
+      let costoElectricoPC = 0;
+      if ($('#togglePC').is(':checked')) {
+        const horasPC = parseFloat($('#horasPC').val()) || 0;
+        const consumoKWpc = horasPC / 1; // Simplificado
+        costoElectricoPC = consumoKWpc * costoEnergia;
+      }
+      
+      // Depreciación de equipos
+      let depImpresora = 0;
+      let depPC = 0;
+      if ($('#toggleAdvancedConfig').is(':checked')) {
+        const costoImpresora = parseFloat($('#costoImpresora').val()) || 0;
+        const impresionesAnio = parseFloat($('#impresionesAnio').val()) || 1;
+        const depreciacionImpresora = parseFloat($('#depreciacionImpresora').val()) || 100;
+        depImpresora = (costoImpresora * (depreciacionImpresora / 100)) / impresionesAnio;
+        
+        if ($('#togglePC').is(':checked')) {
+          const costoPC = parseFloat($('#costoPC').val()) || 0;
+          depPC = costoPC / impresionesAnio;
+        }
+      }
+      
+      // Renta (si está activado)
+      let costoRenta = 0;
+      if ($('#toggleRenta').is(':checked')) {
+        const renta = parseFloat($('#renta').val()) || 0;
+        const impresionesAnio = $('#toggleAdvancedConfig').is(':checked') ? (parseFloat($('#impresionesAnio').val()) || 1) : 1;
+        costoRenta = renta / impresionesAnio;
+      }
+      
+      // Consumibles (si está activado)
+      let totalConsumibles = 0;
+      if ($('#toggleConsumibles').is(':checked')) {
+        const alcohol = parseFloat($('#alcohol').val()) || 0;
+        const adherente = parseFloat($('#adherente').val()) || 0;
+        const camaMagnetica = parseFloat($('#camaMagnetica').val()) || 0;
+        const memoriaSD = parseFloat($('#memoriaSD').val()) || 0;
+        const otrosConsumibles = parseFloat($('#otrosConsumibles').val()) || 0;
+        const degradacionConsumibles = parseFloat($('#degradacionConsumibles').val()) || 0;
+        totalConsumibles = (alcohol + adherente + camaMagnetica + memoriaSD + otrosConsumibles) * (degradacionConsumibles / 100);
+      }
+      
+      // Mano de obra impresión
+      const sueldoHora = parseFloat($('#sueldoHora').val()) || 0;
+      const gananciaHora = parseFloat($('#gananciaHora').val()) || 0;
+      const manoObraImpresion = (sueldoHora + gananciaHora) * horasImpresion;
+      
+      // Postprocesado (si está activado)
+      let costoPostproc = 0;
+      if ($('#togglePost').is(':checked')) {
+        const horasPostproc = parseFloat($('#horasPostproc').val()) || 0;
+        const costoPegamento = parseFloat($('#costoPegamento').val()) || 0;
+        const sueldoHoraPostproc = parseFloat($('#sueldoHoraPostproc').val()) || 0;
+        const otrosPostproc = parseFloat($('#otrosPostproc').val()) || 0;
+        
+        let lijas = 0;
+        if ($('#toggleLijado').is(':checked')) {
+          const cantidadLijas = parseFloat($('#cantidadLijas').val()) || 0;
+          const costoLija = parseFloat($('#costoLija').val()) || 0;
+          lijas = cantidadLijas * costoLija;
+        }
+        
+        let costoLijadora = 0;
+        if ($('#toggleLijado').is(':checked') && $('#tipoLijado').val() === 'lijadora') {
+          costoLijadora = parseFloat($('#costoLijadora').val()) || 0;
+        }
+        
+        const manoObraPostproc = sueldoHoraPostproc * horasPostproc;
+        costoPostproc = costoPegamento + lijas + costoLijadora + manoObraPostproc + otrosPostproc;
+      }
+      
+      // Pintura (si está activado)
+      let costoPinturaTotal = 0;
+      if ($('#togglePost').is(':checked') && $('#togglePaint').is(':checked')) {
+        const horasPintura = parseFloat($('#horasPintura').val()) || 0;
+        const sueldoHoraPintura = parseFloat($('#sueldoHoraPintura').val()) || 0;
+        const costoPrimer = parseFloat($('#costoPrimer').val()) || 0;
+        const costoPintura = parseFloat($('#costoPintura').val()) || 0;
+        const costoDiluyente = parseFloat($('#costoDiluyente').val()) || 0;
+        const otrosPintura = parseFloat($('#otrosPintura').val()) || 0;
+        
+        let costoCompresor = 0;
+        let costoAerografo = 0;
+        if ($('#compresorPropio').val() === 'si') {
+          costoCompresor = parseFloat($('#costoCompresor').val()) || 0;
+          costoAerografo = parseFloat($('#costoAerografo').val()) || 0;
+        }
+        
+        const manoObraPintura = sueldoHoraPintura * horasPintura;
+        costoPinturaTotal = costoCompresor + costoAerografo + costoPrimer + costoPintura + costoDiluyente + manoObraPintura + otrosPintura;
+      }
+      
+      // Envío y empaque
+      let costoEnvioTotal = 0;
+      if ($('#toggleEmpaque').is(':checked')) {
+        costoEnvioTotal += parseFloat($('#empaque').val()) || 0;
+      }
+      if ($('#toggleEnvioNac').is(':checked')) {
+        costoEnvioTotal += parseFloat($('#envioNacional').val()) || 0;
+      }
+      
+      // Impuestos y comisiones
+      const iva = parseFloat($('#iva').val()) || 0;
+      const mercadoLibre = $('#mercadoLibre').is(':checked');
+      
+      // Cálculo de subtotales
+      const subtotal =
+        depImpresora + depPC + costoFilamentoUtilizado + costoElectrico + costoElectricoPC +
+        costoRenta + totalConsumibles + manoObraImpresion +
+        ($('#togglePost').is(':checked') ? costoPostproc : 0) +
+        ($('#togglePost').is(':checked') && $('#togglePaint').is(':checked') ? costoPinturaTotal : 0) +
+        costoEnvioTotal;
+      
+      const recargoML = mercadoLibre ? subtotal * 0.10 : 0;
+      const subtotalML = subtotal + recargoML;
+      const valorIVA = subtotalML * (iva / 100);
+      const totalFinal = subtotalML + valorIVA;
+      
+      // Actualizar el valor final destacado
+      $('#totalFinalValue').text(formatCurrency(totalFinal));
+      
+      // Generar HTML del resumen
+      const html = `
+        <div class="responsive-table">
+          <table class="striped">
+            <thead>
+              <tr>
+                <th>Concepto</th>
+                <th class="right-align">Monto (ARS)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Depreciación impresora</td>
+                <td class="right-align">${formatCurrency(depImpresora)}</td>
+              </tr>
+              <tr>
+                <td>Depreciación PC</td>
+                <td class="right-align">${formatCurrency(depPC)}</td>
+              </tr>
+              <tr>
+                <td>Filamento utilizado</td>
+                <td class="right-align">${formatCurrency(costoFilamentoUtilizado)}</td>
+              </tr>
+              <tr>
+                <td>Electricidad impresora</td>
+                <td class="right-align">${formatCurrency(costoElectrico)}</td>
+              </tr>
+              <tr>
+                <td>Electricidad PC</td>
+                <td class="right-align">${formatCurrency(costoElectricoPC)}</td>
+              </tr>
+              <tr>
+                <td>Renta (proporcional)</td>
+                <td class="right-align">${$('#toggleRenta').is(':checked') ? formatCurrency(costoRenta) : '—'}</td>
+              </tr>
+              <tr>
+                <td>Consumibles (proporcional)</td>
+                <td class="right-align">${$('#toggleConsumibles').is(':checked') ? formatCurrency(totalConsumibles) : '—'}</td>
+              </tr>
+              <tr>
+                <td>Mano de obra impresión</td>
+                <td class="right-align">${formatCurrency(manoObraImpresion)}</td>
+              </tr>
+              <tr>
+                <td>Postprocesado</td>
+                <td class="right-align">${$('#togglePost').is(':checked') ? formatCurrency(costoPostproc) : '—'}</td>
+              </tr>
+              <tr>
+                <td>Pintura</td>
+                <td class="right-align">${($('#togglePost').is(':checked') && $('#togglePaint').is(':checked')) ? formatCurrency(costoPinturaTotal) : '—'}</td>
+              </tr>
+              <tr>
+                <td>Envío y empaque</td>
+                <td class="right-align">${formatCurrency(costoEnvioTotal)}</td>
+              </tr>
+              <tr>
+                <td><b>Recargo Mercado Libre</b></td>
+                <td class="right-align text-warning"><b>${recargoML ? "+" + formatCurrency(recargoML) : "—"}</b></td>
+              </tr>
+              <tr>
+                <td><b>IVA (${iva}%)</b></td>
+                <td class="right-align text-warning"><b>${formatCurrency(valorIVA)}</b></td>
+              </tr>
+              <tr>
+                <td><b>TOTAL FINAL</b></td>
+                <td class="right-align text-success"><b>${formatCurrency(totalFinal)}</b></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      // Actualizar el DOM
+      $('#resumen').html(html);
+      
+      // Actualizar previsualización de ganancias si estamos en el paso 4
+      if (currentStep === 4) {
+        updateEarningsPreview();
+      }
+    }
+    
+    // Exportar a PDF
+    function exportToPDF() {
+      // Crear una instancia de jsPDF
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      // Título
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      doc.text('Presupuesto de Impresión 3D', 105, 20, null, null, 'center');
+      
+      // Fecha
+      const now = new Date();
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text('Generado el: ' + now.toLocaleDateString(), 105, 28, null, null, 'center');
+      
+      // Nombre del cliente (si se proporcionó)
+      const nombreCliente = $('#nombreCliente').val();
+      if (nombreCliente) {
+        doc.setFontSize(12);
+        doc.text(`Cliente: ${nombreCliente}`, 20, 40);
+      }
+      
+      // Datos principales
+      doc.setFontSize(12);
+      let y = nombreCliente ? 50 : 40;
+      
+      // Obtener algunos datos clave
+      const totalFinal = $('#totalFinalValue').text();
+      
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text('Resumen del Presupuesto', 105, y, null, null, 'center');
+      y += 10;
+      
+      // Crear la tabla
+      const tableColumn = ["Concepto", "Monto (ARS)"];
+      const tableRows = [];
+      
+      $('#resumen table tbody tr').each(function() {
+        const cols = $(this).find('td');
+        if (cols.length === 2) {
+          const concepto = $(cols[0]).text().trim();
+          const monto = $(cols[1]).text().trim();
+          // Solo incluir si el monto no es '—'
+          if (monto !== '—') {
+            tableRows.push([concepto, monto]);
+          }
+        }
+      });
+      
+      // Agregar el total final
+      tableRows.push(['TOTAL FINAL', totalFinal]);
+      
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: y,
+        theme: 'grid',
+        headStyles: { 
+          fillColor: [25, 118, 210],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold'
+        },
+        styles: {
+          fontSize: 10,
+          cellPadding: 3
+        },
+        columnStyles: {
+          1: {cellWidth: 40, halign: 'right'}
+        },
+        didDrawCell: function(data) {
+          // Destacar la última fila (total final)
+          if (data.row.index === tableRows.length - 1) {
+            doc.setFillColor(102, 187, 106); // verde
+            doc.setTextColor(255, 255, 255);
+          }
+        }
+      });
+      
+      // Guardar
+      doc.save('presupuesto_impresion3d.pdf');
+      
+      // Notificación
+      M.toast({html: 'Presupuesto exportado a PDF exitosamente', classes: 'green'});
+    }
+    
+    // Formatear moneda
+    function formatCurrency(amount) {
+      return amount.toLocaleString('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      });
+    }
+  </script>
+</body>
+</html>
